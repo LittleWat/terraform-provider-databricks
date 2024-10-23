@@ -58,7 +58,7 @@ type MonitorInfoExtended struct {
 	catalog_tf.MonitorInfo
 	WarehouseId          types.String `tfsdk:"warehouse_id" tf:"optional"`
 	SkipBuiltinDashboard types.Bool   `tfsdk:"skip_builtin_dashboard" tf:"optional"`
-	ID                   types.String `tfsdk:"id" tf:"optional,computed"`
+	ID                   types.String `tfsdk:"id" tf:"optional,computed"` // Adding ID field to stay compatible with SDKv2
 }
 
 type QualityMonitorResource struct {

@@ -1,9 +1,10 @@
-package acceptance
+package share_test
 
 import (
 	"strconv"
 	"testing"
 
+	"github.com/databricks/terraform-provider-databricks/internal/acceptance"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -11,15 +12,15 @@ import (
 
 func checkSharesDataSourcePopulated(t *testing.T) func(s *terraform.State) error {
 	return func(s *terraform.State) error {
-		_, ok := s.Modules[0].Resources["data.databricks_shares.this"]
-		require.True(t, ok, "data.databricks_shares.this has to be there")
+		_, ok := s.Modules[0].Resources["data.databricks_shares_pluginframework.this"]
+		require.True(t, ok, "data.databricks_shares_pluginframework.this has to be there")
 		num_shares, _ := strconv.Atoi(s.Modules[0].Outputs["shares"].Value.(string))
 		assert.GreaterOrEqual(t, num_shares, 1)
 		return nil
 	}
 }
 func TestUcAccDataSourceShares(t *testing.T) {
-	UnityWorkspaceLevel(t, Step{
+	acceptance.UnityWorkspaceLevel(t, acceptance.Step{
 		Template: `
 		resource "databricks_catalog" "sandbox" {
 			name         = "sandbox{var.RANDOM}"
@@ -85,11 +86,11 @@ func TestUcAccDataSourceShares(t *testing.T) {
 			}						
 		}
 
-		data "databricks_shares" "this" {
+		data "databricks_shares_pluginframework" "this" {
 			depends_on = [databricks_share.myshare]
 		}
 		output "shares" {
-			value = length(data.databricks_shares.this.shares)
+			value = length(data.databricks_shares_pluginframework.this.shares)
 		}
 		`,
 		Check: checkSharesDataSourcePopulated(t),
